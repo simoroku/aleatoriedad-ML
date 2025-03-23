@@ -6,9 +6,34 @@ import streamlit as st
 from tensorflow.keras.models import load_model
 
 # 📌 Cargar el modelo guardado
+import os
+import requests
+import joblib
+import tensorflow as tf
+import streamlit as st
+from tensorflow.keras.models import load_model
+
+# 📌 URL del modelo en tu repositorio de GitHub (cambia esto con tu enlace real)
+MODEL_URL = "https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/modelo_baloto.h5"
+SCALER_URL = "https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/scaler_baloto.pkl"
+
 @st.cache_resource
 def cargar_modelo():
-    modelo = load_model("modelo_baloto.h5")
+    # Descargar el modelo si no está en la carpeta
+    if not os.path.exists("modelo_baloto.h5"):
+        st.write("Descargando modelo...")
+        r = requests.get(MODEL_URL)
+        with open("modelo_baloto.h5", "wb") as f:
+            f.write(r.content)
+
+    # Descargar el scaler si no está en la carpeta
+    if not os.path.exists("scaler_baloto.pkl"):
+        st.write("Descargando scaler...")
+        r = requests.get(SCALER_URL)
+        with open("scaler_baloto.pkl", "wb") as f:
+            f.write(r.content)
+
+    modelo = load_model("modelo_baloto.h5", compile=False)  # Carga sin compilar
     scaler = joblib.load("scaler_baloto.pkl")
     return modelo, scaler
 
