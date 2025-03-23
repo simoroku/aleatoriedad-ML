@@ -6,14 +6,8 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 from tensorflow.keras.models import load_model
-import os
 import requests
 import pickle
-import pandas as pd
-import numpy as np
-import tensorflow as tf
-import streamlit as st
-from tensorflow.keras.models import load_model
 
 # 📌 URL del modelo en tu repositorio de GitHub (cambia esto con tu enlace real)
 MODEL_URL = "https://raw.githubusercontent.com/TU_USUARIO/TU_REPOSITORIO/main/modelo_baloto.h5"
@@ -37,9 +31,13 @@ def cargar_modelo():
 
     modelo = load_model("modelo_baloto.h5", compile=False)  # Carga sin compilar
     
-    # Cargar el scaler con Pickle
-    with open("scaler_baloto.pkl", "rb") as f:
-        scaler = pickle.load(f)
+    # Cargar el scaler con Pickle y manejar posibles errores
+    try:
+        with open("scaler_baloto.pkl", "rb") as f:
+            scaler = pickle.load(f)
+    except Exception as e:
+        st.error(f"Error al cargar el scaler: {e}")
+        st.stop()
 
     return modelo, scaler
 
@@ -72,6 +70,10 @@ if file_path:
     # 📌 Guardar en un archivo Excel
     prediccion_df = pd.DataFrame(prediccion_final, columns=["N1", "N2", "N3", "N4", "N5", "N6"])
     prediccion_df.insert(0, "Fecha_Predicha", "Próximo Sorteo")
+    output_path = "Prediccion_Baloto.xlsx"
+    prediccion_df.to_excel(output_path, index=False)
+
+    st.download_button("Descargar Predicción", data=open(output_path, "rb").read(), file_name="Prediccion_Baloto.xlsx")
     output_path = "Prediccion_Baloto.xlsx"
     prediccion_df.to_excel(output_path, index=False)
 
