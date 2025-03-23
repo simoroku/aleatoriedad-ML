@@ -7,14 +7,6 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 from tensorflow.keras.models import load_model
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Deshabilita GPU para TensorFlow
-
-import tensorflow as tf
-import pandas as pd
-import numpy as np
-import streamlit as st
-from tensorflow.keras.models import load_model
 import requests
 import pickle
 
@@ -67,6 +59,11 @@ if file_path:
     # 📌 Cargar el modelo y scaler
     modelo, scaler = cargar_modelo()
 
+    # 📌 Verificar dimensiones del scaler y los datos
+    if data.iloc[-1, 1:].shape[0] != scaler.n_features_in_:
+        st.error("Error: El número de características en el scaler y los datos no coincide.")
+        st.stop()
+
     # 📌 Última combinación ganadora para predecir la siguiente
     ultima_entrada = scaler.transform(data.iloc[-1, 1:].values.reshape(1, -1))
     prediccion_scaled = modelo.predict(ultima_entrada)
@@ -79,10 +76,6 @@ if file_path:
     # 📌 Guardar en un archivo Excel
     prediccion_df = pd.DataFrame(prediccion_final, columns=["N1", "N2", "N3", "N4", "N5", "N6"])
     prediccion_df.insert(0, "Fecha_Predicha", "Próximo Sorteo")
-    output_path = "Prediccion_Baloto.xlsx"
-    prediccion_df.to_excel(output_path, index=False)
-
-    st.download_button("Descargar Predicción", data=open(output_path, "rb").read(), file_name="Prediccion_Baloto.xlsx")
     output_path = "Prediccion_Baloto.xlsx"
     prediccion_df.to_excel(output_path, index=False)
 
