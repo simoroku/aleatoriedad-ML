@@ -1,4 +1,13 @@
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Deshabilita GPU en TensorFlow
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Oculta advertencias de TensorFlow
+
+import tensorflow as tf
+import pandas as pd
+import numpy as np
+import streamlit as st
+from tensorflow.keras.models import load_model
+import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Deshabilita GPU para TensorFlow
 
 import tensorflow as tf
