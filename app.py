@@ -6,7 +6,7 @@ import streamlit as st
 from tensorflow.keras.models import load_model
 
 # 📌 Cargar el modelo guardado
-@st.cache_data(allow_output_mutation=True)
+@st.cache_resource
 def cargar_modelo():
     modelo = load_model("modelo_baloto.h5")
     scaler = joblib.load("scaler_baloto.pkl")
