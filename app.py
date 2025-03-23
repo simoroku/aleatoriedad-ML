@@ -1,14 +1,8 @@
-import pandas as pd
-import numpy as np
-import joblib
-import tensorflow as tf
-import streamlit as st
-from tensorflow.keras.models import load_model
-
-# 📌 Cargar el modelo guardado
 import os
 import requests
-import joblib
+import pickle
+import pandas as pd
+import numpy as np
 import tensorflow as tf
 import streamlit as st
 from tensorflow.keras.models import load_model
@@ -34,7 +28,11 @@ def cargar_modelo():
             f.write(r.content)
 
     modelo = load_model("modelo_baloto.h5", compile=False)  # Carga sin compilar
-    scaler = joblib.load("scaler_baloto.pkl")
+    
+    # Cargar el scaler con Pickle
+    with open("scaler_baloto.pkl", "rb") as f:
+        scaler = pickle.load(f)
+
     return modelo, scaler
 
 st.title("Predicción del Baloto")
