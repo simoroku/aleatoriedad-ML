@@ -1,6 +1,5 @@
-streamlit
+tensorflow
 pandas
 numpy
-tensorflow
-scikit-learn
-openpyxl
+joblib
+streamlit
